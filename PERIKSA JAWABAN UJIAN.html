@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Lembar Periksa Jawaban - Multi Siswa</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f5f5f5;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    textarea {
+      height: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px 0 0;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #e0e0e0;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableTable, #printableTable * {
+        visibility: visible;
+      }
+      #printableTable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Aplikasi Lembar Periksa Jawaban - by @ahmad_nurjaya</h2>
+
+  <div class="input-group">
+    <label>Nama Sekolah (Opsional):</label>
+    <input type="text" id="sekolah" placeholder="Contoh: SMP Negeri 1 Jakarta">
+  </div>
+
+  <div class="input-group">
+    <label>Kelas (Opsional):</label>
+    <input type="text" id="kelas" placeholder="Contoh: IX-A">
+  </div>
+
+  <div class="input-group">
+    <label>Kunci Jawaban (Wajib):</label>
+    <textarea id="kunci" placeholder="Contoh: ABCDCBA"></textarea>
+  </div>
+
+  <div class="input-group">
+    <label>Daftar Jawaban Siswa (Wajib):</label>
+    <textarea id="data" placeholder="Contoh:
+Ahmad Nurjaya, ABCDABCDAB
+Budi, ABCDABCCAB
+Cantika, ABCBABCDAB"></textarea>
+  </div>
+
+  <button onclick="periksa()">Periksa Jawaban</button>
+  <button onclick="exportToExcel()">Export ke Excel</button>
+  <button onclick="exportToPDF()">Export ke PDF</button>
+
+  <div id="output"></div>
+  <div id="printableTable" style="display:none;"></div>
+
+  <script>
+    // Inisialisasi jsPDF
+    window.jsPDF = window.jspdf.jsPDF;
+    
+    function periksa() {
+      const sekolah = document.getElementById("sekolah").value.trim();
+      const kelas = document.getElementById("kelas").value.trim();
+      const kunci = document.getElementById("kunci").value.toUpperCase().replace(/\s/g, "");
+      const data = document.getElementById("data").value.trim().split("\n");
+
+      if (!kunci) {
+        alert("Kunci jawaban harus diisi!");
+        return;
+      }
+
+      let hasil = [];
+      let outputHTML = "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+      let printableHTML = "";
+
+      // Header untuk printable version
+      if (sekolah) {
+        printableHTML += `<h2 style="text-align:center">${sekolah}</h2>`;
+      }
+      if (kelas) {
+        printableHTML += `<h3 style="text-align:center">Kelas: ${kelas}</h3>`;
+      }
+      printableHTML += "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+
+      data.forEach((baris, index) => {
+        const parts = baris.split(",");
+        if (parts.length < 2) return;
+        
+        const nama = parts[0].trim();
+        const jawabanRaw = parts[1].trim();
+        
+        const jawaban = jawabanRaw.toUpperCase().replace(/\s/g, "");
+        let benar = 0;
+        
+        for (let i = 0; i < Math.min(kunci.length, jawaban.length); i++) {
+          if (jawaban[i] === kunci[i]) benar++;
+        }
+        
+        const total = kunci.length;
+        const nilai = (benar * 2).toFixed(2);
+        const salah = total - benar;
+
+        hasil.push({ 
+          No: index + 1, 
+          Nama: nama, 
+          Jawaban: jawaban, 
+          Benar: benar, 
+          Salah: salah,
+          Skor: nilai,
+          Sekolah: sekolah,
+          Kelas: kelas
+        });
+
+        outputHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+        
+        printableHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+      });
+
+      outputHTML += "</table>";
+      printableHTML += "</table>";
+      document.getElementById("output").innerHTML = outputHTML;
+      document.getElementById("printableTable").innerHTML = printableHTML;
+      window.hasilData = hasil;
+    }
+
+    function exportToExcel() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
+
+      const excelData = window.hasilData.map(item => ({
+        No: item.No,
+        Nama: item.Nama,
+        Jawaban: item.Jawaban,
+        Benar: item.Benar,
+        Salah: item.Salah,
+        Skor: item.Skor,
+        Sekolah: item.Sekolah,
+        Kelas: item.Kelas
+      }));
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
+      XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
+    }
+
+    function exportToPDF() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
+
+      const doc = new jsPDF();
+      const sekolah = window.hasilData[0].Sekolah;
+      const kelas = window.hasilData[0].Kelas;
+      
+      // Add school info (centered)
+      if (sekolah) {
+        doc.setFontSize(16);
+        doc.text(sekolah, doc.internal.pageSize.width / 2, 15, { align: 'center' });
+      }
+      if (kelas) {
+        doc.setFontSize(14);
+        doc.text(`Kelas: ${kelas}`, doc.internal.pageSize.width / 2, 22, { align: 'center' });
+      }
+      
+      // Prepare data for PDF
+      const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
+      const data = window.hasilData.map(item => [
+        item.No,
+        item.Nama,
+        item.Jawaban,
+        item.Benar,
+        item.Salah,
+        item.Skor
+      ]);
+      
+      // Add table to PDF
+      doc.autoTable({
+        head: headers,
+        body: data,
+        startY: sekolah || kelas ? 30 : 20,
+        styles: {
+          fontSize: 9,
+          cellPadding: 3,
+          halign: 'center'
+        },
+        headStyles: {
+          fillColor: [220, 220, 220],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          5: {halign: 'right'} // Right-align Skor column
+        }
+      });
+      
+      doc.save("hasil_lembar_periksa.pdf");
+    }
+  </script>
+</body>
+</html>
