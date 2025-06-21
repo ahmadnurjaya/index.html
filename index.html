@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Lembar Periksa Jawaban - Multi Siswa</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    /* [Previous CSS styles remain the same] */
+  </style>
+</head>
+<body>
+  <!-- [Previous HTML remains the same until the table structure] -->
+
+  <script>
+    const { jsPDF } = window.jspdf;
+    
+    function periksa() {
+      const kunci = document.getElementById("kunci").value.toUpperCase().replace(/\s/g, "");
+      const data = document.getElementById("data").value.trim().split("\n");
+
+      let hasil = [];
+      let outputHTML = "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+      let printableHTML = "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+
+      data.forEach((baris, index) => {
+        const [nama, jawabanRaw] = baris.split(",");
+        if (!nama || !jawabanRaw) return;
+
+        const jawaban = jawabanRaw.toUpperCase().replace(/\s/g, "");
+        let benar = 0;
+        for (let i = 0; i < kunci.length; i++) {
+          if (jawaban[i] === kunci[i]) benar++;
+        }
+        const total = kunci.length;
+        const nilai = (benar * 2).toFixed(2);
+        const salah = total - benar;
+
+        hasil.push({ 
+          No: index + 1, 
+          Nama: nama.trim(), 
+          Jawaban: jawaban, 
+          Benar: benar, 
+          Salah: salah,
+          Skor: nilai 
+        });
+
+        outputHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama.trim()}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+        
+        printableHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama.trim()}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+      });
+
+      outputHTML += "</table>";
+      printableHTML += "</table>";
+      document.getElementById("output").innerHTML = outputHTML;
+      document.getElementById("printableTable").innerHTML = printableHTML;
+      window.hasilData = hasil;
+    }
+
+    function exportToExcel() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(window.hasilData);
+      XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
+      XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
+    }
+
+    function exportToPDF() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
+
+      const doc = new jsPDF();
+      
+      // Add title
+      doc.setFontSize(16);
+      doc.text("Lembar Periksa Jawaban", 14, 15);
+      doc.setFontSize(10);
+      doc.text("by @ahmad_nurjaya", 14, 20);
+      
+      // Prepare data for PDF with Skor as last column
+      const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
+      const data = window.hasilData.map(item => [
+        item.No,
+        item.Nama,
+        item.Jawaban,
+        item.Benar,
+        item.Salah,
+        item.Skor
+      ]);
+      
+      // Add table to PDF
+      doc.autoTable({
+        head: headers,
+        body: data,
+        startY: 25,
+        styles: {
+          fontSize: 8,
+          cellPadding: 2,
+          halign: 'center'
+        },
+        headStyles: {
+          fillColor: [220, 220, 220],
+          textColor: [0, 0, 0]
+        },
+        columnStyles: {
+          5: {halign: 'right'} // Right-align the Skor column
+        }
+      });
+      
+      doc.save("hasil_lembar_periksa.pdf");
+    }
+  </script>
+</body>
+</html>
