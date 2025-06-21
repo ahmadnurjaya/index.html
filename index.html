@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Lembar Periksa Jawaban - Multi Siswa</title>
+  <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -74,16 +74,21 @@
   </style>
 </head>
 <body>
-  <h2>Aplikasi Lembar Periksa Jawaban - by @ahmad_nurjaya</h2>
+  <h2>APLIKASI PERIKSA JAWABAN UJIAN by @ahmad_nurjaya</h2>
 
   <div class="input-group">
     <label>Nama Sekolah (Opsional):</label>
-    <input type="text" id="sekolah" placeholder="Contoh: SMP Negeri 1 Jakarta">
+    <input type="text" id="sekolah" placeholder="Contoh: SMP AR-RIDWAN">
   </div>
 
   <div class="input-group">
     <label>Kelas (Opsional):</label>
-    <input type="text" id="kelas" placeholder="Contoh: IX-A">
+    <input type="text" id="kelas" placeholder="Contoh: VII-A">
+  </div>
+
+  <div class="input-group">
+    <label>Mata Pelajaran (Opsional):</label>
+    <input type="text" id="mapel" placeholder="Contoh: Matematika">
   </div>
 
   <div class="input-group">
@@ -113,6 +118,7 @@ Cantika, ABCBABCDAB"></textarea>
     function periksa() {
       const sekolah = document.getElementById("sekolah").value.trim();
       const kelas = document.getElementById("kelas").value.trim();
+      const mapel = document.getElementById("mapel").value.trim();
       const kunci = document.getElementById("kunci").value.toUpperCase().replace(/\s/g, "");
       const data = document.getElementById("data").value.trim().split("\n");
 
@@ -126,12 +132,9 @@ Cantika, ABCBABCDAB"></textarea>
       let printableHTML = "";
 
       // Header untuk printable version
-      if (sekolah) {
-        printableHTML += `<h2 style="text-align:center">${sekolah}</h2>`;
-      }
-      if (kelas) {
-        printableHTML += `<h3 style="text-align:center">Kelas: ${kelas}</h3>`;
-      }
+      if (sekolah) printableHTML += `<h2 style="text-align:center">${sekolah}</h2>`;
+      if (kelas) printableHTML += `<h3 style="text-align:left">Kelas: ${kelas}</h3>`;
+      if (mapel) printableHTML += `<h3 style="text-align:right">Mata Pelajaran: ${mapel}</h3>`;
       printableHTML += "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
 
       data.forEach((baris, index) => {
@@ -160,7 +163,8 @@ Cantika, ABCBABCDAB"></textarea>
           Salah: salah,
           Skor: nilai,
           Sekolah: sekolah,
-          Kelas: kelas
+          Kelas: kelas,
+          Mapel: mapel
         });
 
         outputHTML += `<tr>
@@ -203,7 +207,8 @@ Cantika, ABCBABCDAB"></textarea>
         Salah: item.Salah,
         Skor: item.Skor,
         Sekolah: item.Sekolah,
-        Kelas: item.Kelas
+        Kelas: item.Kelas,
+        MataPelajaran: item.Mapel
       }));
 
       const wb = XLSX.utils.book_new();
@@ -219,19 +224,34 @@ Cantika, ABCBABCDAB"></textarea>
       }
 
       const doc = new jsPDF();
+      const { width } = doc.internal.pageSize;
       const sekolah = window.hasilData[0].Sekolah;
       const kelas = window.hasilData[0].Kelas;
-      
-      // Add school info (centered)
+      const mapel = window.hasilData[0].Mapel;
+
+      // Set default font
+      doc.setFont("helvetica", "normal");
+
+      // School (Center)
       if (sekolah) {
         doc.setFontSize(16);
-        doc.text(sekolah, doc.internal.pageSize.width / 2, 15, { align: 'center' });
+        doc.text(sekolah, width / 2, 15, { align: 'center' });
       }
+
+      // Class (Left) and Subject (Right) - Same Y position
+      const infoY = 25;
       if (kelas) {
-        doc.setFontSize(14);
-        doc.text(`Kelas: ${kelas}`, doc.internal.pageSize.width / 2, 22, { align: 'center' });
+        doc.setFontSize(12);
+        doc.text(`Kelas: ${kelas}`, 15, infoY);
       }
-      
+      if (mapel) {
+        doc.setFontSize(12);
+        doc.text(`Mata Pelajaran: ${mapel}`, width - 15, infoY, { align: 'right' });
+      }
+
+      // Calculate startY position for table
+      const startY = infoY + 10;
+
       // Prepare data for PDF
       const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
       const data = window.hasilData.map(item => [
@@ -247,7 +267,7 @@ Cantika, ABCBABCDAB"></textarea>
       doc.autoTable({
         head: headers,
         body: data,
-        startY: sekolah || kelas ? 30 : 20,
+        startY: startY,
         styles: {
           fontSize: 9,
           cellPadding: 3,
