@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
   <style>
+  :root {
+    --color1: #FF9A8B;
+    --color2: #FF6B6B;
+    --color3: #4CC9F0;
+  }
+  
   body {
-    font-family: 'Inter', sans-serif;
-    background: #f8f9fa;
-    color: #212529;
-    line-height: 1.6;
+    background: linear-gradient(45deg, var(--color1), var(--color3));
+    font-family: 'Comic Neue', cursive;
   }
   
-  .input-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  input, textarea {
-    border: 1px solid #ced4da;
-    transition: border 0.3s;
-  }
-  
-  input:focus, textarea:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+  .card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
   }
   
   button {
-    letter-spacing: 0.5px;
+    background: var(--color2);
   }
   
-  table {
-    border: 1px solid #dee2e6;
+  th {
+    background: var(--color3);
+    color: white;
   }
 </style>
+
   <head>
   <meta charset="UTF-8">
   <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
