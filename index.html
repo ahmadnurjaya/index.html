@@ -1,32 +1,106 @@
 <!DOCTYPE html>
 <html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-  :root {
-    --color1: #FF9A8B;
-    --color2: #FF6B6B;
-    --color3: #4CC9F0;
-  }
-  
-  body {
-    background: linear-gradient(45deg, var(--color1), var(--color3));
-    font-family: 'arial', cursive;
-  }
-  
-  .card {
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-  }
-  
-  button {
-    background: var(--color2);
-  }
-  
-  th {
-    background: var(--color3);
-    color: white;
-  }
-</style>
-<style>
+    :root {
+      --color1: #FF9A8B;
+      --color2: #FF6B6B;
+      --color3: #4CC9F0;
+    }
+
+    body {
+      background: linear-gradient(45deg, var(--color1), var(--color3));
+      font-family: Arial, sans-serif; /* Menggunakan Arial atau sans-serif secara umum */
+      margin: 40px; /* Jaga margin body */
+      color: #333; /* Warna teks default */
+    }
+
+    h2 {
+      text-align: center;
+      color: #4361ee;
+      font-size: 24px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    /* Gaya untuk input teks dan textarea, termasuk placeholder */
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box; /* Penting untuk menjaga padding dan border tidak menambah lebar */
+      font-family: 'Times New Roman', Times, serif; /* Font yang diinginkan untuk placeholder */
+    }
+
+    /* Mengatur gaya placeholder secara spesifik */
+    input::placeholder,
+    textarea::placeholder {
+      font-family: 'Times New Roman', Times, serif; /* Font yang sama untuk placeholder */
+      color: #888; /* Warna placeholder default */
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical; /* Memungkinkan textarea di-resize secara vertikal */
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px 0 0;
+      font-size: 16px;
+      background-color: var(--color2); /* Menggunakan warna dari root */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3; /* Sedikit lebih gelap saat hover */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: var(--color3); /* Menggunakan warna dari root */
+      color: white; /* Pastikan teks header putih */
+      font-weight: bold;
+    }
+
     /* Untuk tabel di dalam #output */
     #output table th {
       color: #000000; /* Warna hitam */
@@ -46,64 +120,7 @@
       text-align: center;
       border: 1px solid #ddd;
     }
-  </style>  
-  <head>
-  <meta charset="UTF-8">
-  <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f5f5f5;
-    }
-    .input-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    textarea {
-      height: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px 5px 0 0;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: white;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #e0e0e0;
-    }
+
     @media print {
       body * {
         visibility: hidden;
@@ -118,47 +135,38 @@
         width: 100%;
       }
     }
+
+    /* Gaya untuk tombol TikTok */
+    .tiktok-button {
+      background: linear-gradient(45deg, #405DE6, #E1306C);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px auto; /* Untuk menengahkan tombol */
+      font-size: 16px;
+      text-align: center; /* Pastikan teks di tengah */
+      width: fit-content; /* Sesuaikan lebar dengan konten */
+    }
+    .tiktok-button i {
+      margin-right: 5px;
+    }
+    .tiktok-button-container {
+        text-align: center; /* Untuk menengahkan elemen anchor */
+        margin-bottom: 20px; /* Tambahkan sedikit jarak di bawah tombol */
+    }
   </style>
 </head>
 <body>
   <h2>APLIKASI PERIKSA JAWABAN UJIAN</h2>
-<style>
-    h2 {
-      text-align: center;
-      color: #4361ee;
-      font-size: 24px;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-  </style>
-<h2><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Tombol TikTok</title>
-  <!-- Link ke Font Awesome untuk ikon TikTok -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
 
-  <a href="https://www.tiktok.com/@tukangseblakaesthetic" 
-     style="
-       background: linear-gradient(45deg, #405DE6, #E1306C);
-       color: white;
-       padding: 10px 20px;
-       border-radius: 25px;
-       text-decoration: none;
-       display: inline-block;
-       margin: 10px;
-       font-size: 16px;
-     " target="_blank">
-     <i class="fab fa-tiktok"></i> Follow @tukangseblakaesthetic
-  </a>
+  <div class="tiktok-button-container">
+    <a href="https://www.tiktok.com/@tukangseblakaesthetic" class="tiktok-button" target="_blank">
+      <i class="fab fa-tiktok"></i> Follow @tukangseblakaesthetic
+    </a>
+  </div>
 
-</body>
-</html>
-</h2>
-  
   <div class="input-group">
     <label>Nama Sekolah (Opsional):</label>
     <input type="text" id="sekolah" placeholder="Contoh: SMP AR-RIDWAN">
@@ -197,7 +205,7 @@ Cantika, ABCBABCDAB"></textarea>
   <script>
     // Inisialisasi jsPDF
     window.jsPDF = window.jspdf.jsPDF;
-    
+
     function periksa() {
       const sekolah = document.getElementById("sekolah").value.trim();
       const kelas = document.getElementById("kelas").value.trim();
@@ -223,33 +231,33 @@ Cantika, ABCBABCDAB"></textarea>
       data.forEach((baris, index) => {
         const parts = baris.split(",");
         if (parts.length < 2) return;
-        
+
         const nama = parts[0].trim();
         const jawabanRaw = parts[1].trim();
-        
+
         const jawaban = jawabanRaw.toUpperCase().replace(/\s/g, "");
         let benar = 0;
-        
+
         for (let i = 0; i < Math.min(kunci.length, jawaban.length); i++) {
           if (jawaban[i] === kunci[i]) benar++;
         }
-        
+
         const total = kunci.length;
         const nilai = (benar * 2).toFixed(2);
         const salah = total - benar;
 
-        hasil.push({ 
-          No: index + 1, 
-          Nama: nama, 
-          Jawaban: jawaban, 
-          Benar: benar, 
+        hasil.push({
+          No: index + 1,
+          Nama: nama,
+          Jawaban: jawaban,
+          Benar: benar,
           Salah: salah,
           Skor: nilai,
           Sekolah: sekolah,
           Kelas: kelas,
           Mapel: mapel
         });
-        
+
         outputHTML += `<tr>
           <td>${index + 1}</td>
           <td>${nama}</td>
@@ -258,7 +266,7 @@ Cantika, ABCBABCDAB"></textarea>
           <td>${salah}</td>
           <td>${nilai}</td>
         </tr>`;
-        
+
         printableHTML += `<tr>
           <td>${index + 1}</td>
           <td>${nama}</td>
@@ -345,7 +353,7 @@ Cantika, ABCBABCDAB"></textarea>
         item.Salah,
         item.Skor
       ]);
-      
+
       // Add table to PDF
       doc.autoTable({
         head: headers,
@@ -363,14 +371,14 @@ Cantika, ABCBABCDAB"></textarea>
         },
         columnStyles: {
           0: { halign: 'center' }, // No (center)
-          1: { halign: 'left' },   // Nama (left-align)
+          1: { halign: 'left' },    // Nama (left-align)
           2: { halign: 'center' }, // Jawaban (center)
           3: { halign: 'center' }, // Benar (center)
           4: { halign: 'center' }, // Salah (center)
-          5: { halign: 'right' }   // Skor (right-align)
+          5: { halign: 'right' }    // Skor (right-align)
         }
       });
-      
+
       doc.save("hasil_lembar_periksa.pdf");
     }
   </script>
