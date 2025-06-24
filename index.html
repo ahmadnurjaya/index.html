@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-  <style>
+<style>
   :root {
     --color1: #FF9A8B;
     --color2: #FF6B6B;
@@ -18,7 +18,7 @@
   }
   
   button {
-    background: #007bff; /* Dikembalikan ke warna biru default */
+    background: var(--color2); /* Mengembalikan warna tombol sesuai var(--color2) */
   }
   
   th {
@@ -46,13 +46,14 @@
       text-align: center;
       border: 1px solid #ddd;
     }
-  </style>  
+</style>  
   <head>
   <meta charset="UTF-8">
   <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,15 +71,18 @@
     input[type="text"], textarea {
       width: 100%;
       padding: 10px;
-      font-size: 16px; /* Ukuran font untuk input dan textarea secara umum */
+      font-size: 16px;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    /* Menentukan ukuran font khusus untuk placeholder */
+
+    /* --- INI ADALAH SATU-SATUNYA PENAMBAHAN/PERUBAHAN CSS UNTUK UKURAN FONT PLACEHOLDER --- */
     input[type="text"]::placeholder,
     textarea::placeholder {
-      font-size: 16px; /* Ukuran font placeholder yang diinginkan */
+      font-size: 16px; /* Menyelaraskan ukuran font placeholder */
     }
+    /* ---------------------------------------------------------------------------------- */
+
     textarea {
       height: 100px;
     }
@@ -86,7 +90,7 @@
       padding: 10px 20px;
       margin: 10px 5px 0 0;
       font-size: 16px;
-      background-color: #007bff; /* Pastikan kembali ke biru */
+      background-color: #007bff; /* Mengembalikan ke biru */
       color: white;
       border: none;
       border-radius: 5px;
