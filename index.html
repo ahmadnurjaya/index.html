@@ -1,386 +1,378 @@
 <!DOCTYPE html>
 <html lang="id">
-<style>
-  :root {
-    --color1: #FF9A8B;
-    --color2: #FF6B6B;
-    --color3: #4CC9F0;
-  }
-  
-  body {
-    background: linear-gradient(45deg, var(--color1), var(--color3));
-    font-family: 'arial', cursive;
-  }
-  
-  .card {
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-  }
-  
-  button {
-    background: var(--color2); /* Mengembalikan warna tombol sesuai var(--color2) */
-  }
-  
-  th {
-    background: var(--color3);
-    color: white;
-  }
+  <style>
+  :root {
+    --color1: #FF9A8B;
+    --color2: #FF6B6B;
+    --color3: #4CC9F0;
+  }
+  
+  body {
+    background: linear-gradient(45deg, var(--color1), var(--color3));
+    font-family: 'arial', cursive;
+  }
+  
+  .card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+  }
+  
+  button {
+    background: var(--color2);
+  }
+  
+  th {
+    background: var(--color3);
+    color: white;
+  }
 </style>
 <style>
-    /* Untuk tabel di dalam #output */
-    #output table th {
-      color: #000000; /* Warna hitam */
-      background-color: #f0f0f0; /* Background abu-abu muda */
-      font-weight: bold;
-      padding: 8px;
-      text-align: center;
-      border: 1px solid #000000;
-    }
-
-    /* Untuk tabel di dalam #printableTable */
-    #printableTable table th {
-      color: #000000 !important; /* Warna hitam */
-      background-color: #fcfcfc !important;
-      font-weight: bold;
-      padding: 8px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
-</style>  
-  <head>
-  <meta charset="UTF-8">
-  <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f5f5f5;
-    }
-    .input-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    /* --- INI ADALAH SATU-SATUNYA PENAMBAHAN/PERUBAHAN CSS UNTUK UKURAN FONT PLACEHOLDER --- */
-    input[type="text"]::placeholder,
-    textarea::placeholder {
-      font-size: 16px; /* Menyelaraskan ukuran font placeholder */
+    /* Untuk tabel di dalam #output */
+    #output table th {
+      color: #000000; /* Warna hitam */
+      background-color: #f0f0f0; /* Background abu-abu muda */
+      font-weight: bold;
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #000000;
     }
-    /* ---------------------------------------------------------------------------------- */
 
-    textarea {
-      height: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px 5px 0 0;
-      font-size: 16px;
-      background-color: #007bff; /* Mengembalikan ke biru */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: white;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #e0e0e0;
-    }
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printableTable, #printableTable * {
-        visibility: visible;
-      }
-      #printableTable {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-      }
-    }
-  </style>
+    /* Untuk tabel di dalam #printableTable */
+    #printableTable table th {
+      color: #000000 !important; /* Warna hitam */
+      background-color: #fcfcfc !important;
+      font-weight: bold;
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+  </style>  
+  <head>
+  <meta charset="UTF-8">
+  <title>APLIKASI PERIKSA JAWABAN UJIAN</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f5f5f5;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    textarea {
+      height: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px 0 0;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #e0e0e0;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableTable, #printableTable * {
+        visibility: visible;
+      }
+      #printableTable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>APLIKASI PERIKSA JAWABAN UJIAN</h2>
+  <h2>APLIKASI PERIKSA JAWABAN UJIAN</h2>
 <style>
-    h2 {
-      text-align: center;
-      color: #4361ee;
-      font-size: 24px;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-  </style>
+    h2 {
+      text-align: center;
+      color: #4361ee;
+      font-size: 24px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+  </style>
 <h2><!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Tombol TikTok</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>Tombol TikTok</title>
+  <!-- Link ke Font Awesome untuk ikon TikTok -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-  <a href="https://www.tiktok.com/@tukangseblakaesthetic" 
-     style="
-       background: linear-gradient(45deg, #405DE6, #E1306C);
-       color: white;
-       padding: 10px 20px;
-       border-radius: 25px;
-       text-decoration: none;
-       display: inline-block;
-       margin: 10px;
-       font-size: 16px;
-     " target="_blank">
-     <i class="fab fa-tiktok"></i> Follow @tukangseblakaesthetic
-  </a>
+  <a href="https://www.tiktok.com/@tukangseblakaesthetic" 
+     style="
+       background: linear-gradient(45deg, #405DE6, #E1306C);
+       color: white;
+       padding: 10px 20px;
+       border-radius: 25px;
+       text-decoration: none;
+       display: inline-block;
+       margin: 10px;
+       font-size: 16px;
+     " target="_blank">
+     <i class="fab fa-tiktok"></i> Follow @tukangseblakaesthetic
+  </a>
 
 </body>
 </html>
 </h2>
-  
-  <div class="input-group">
-    <label>Nama Sekolah (Opsional):</label>
-    <input type="text" id="sekolah" placeholder="Contoh: SMP AR-RIDWAN">
-  </div>
+  
+  <div class="input-group">
+    <label>Nama Sekolah (Opsional):</label>
+    <input type="text" id="sekolah" placeholder="Contoh: SMP AR-RIDWAN">
+  </div>
 
-  <div class="input-group">
-    <label>Kelas (Opsional):</label>
-    <input type="text" id="kelas" placeholder="Contoh: VII-A">
-  </div>
+  <div class="input-group">
+    <label>Kelas (Opsional):</label>
+    <input type="text" id="kelas" placeholder="Contoh: VII-A">
+  </div>
 
-  <div class="input-group">
-    <label>Mata Pelajaran (Opsional):</label>
-    <input type="text" id="mapel" placeholder="Contoh: Matematika">
-  </div>
+  <div class="input-group">
+    <label>Mata Pelajaran (Opsional):</label>
+    <input type="text" id="mapel" placeholder="Contoh: Matematika">
+  </div>
 
-  <div class="input-group">
-    <label>Kunci Jawaban (Wajib):</label>
-    <textarea id="kunci" placeholder="Contoh: ABCDCBA"></textarea>
-  </div>
+  <div class="input-group">
+    <label>Kunci Jawaban (Wajib):</label>
+    <textarea id="kunci" placeholder="Contoh: ABCDCBA"></textarea>
+  </div>
 
-  <div class="input-group">
-    <label>Daftar Jawaban Siswa (Wajib):</label>
-    <textarea id="data" placeholder="Contoh:
+  <div class="input-group">
+    <label>Daftar Jawaban Siswa (Wajib):</label>
+    <textarea id="data" placeholder="Contoh:
 Ahmad Nurjaya, ABCDABCDAB
 Budi, ABCDABCCAB
 Cantika, ABCBABCDAB"></textarea>
-  </div>
+  </div>
 
-  <button onclick="periksa()">Periksa Jawaban</button>
-  <button onclick="exportToExcel()">Export ke Excel</button>
-  <button onclick="exportToPDF()">Export ke PDF</button>
+  <button onclick="periksa()">Periksa Jawaban</button>
+  <button onclick="exportToExcel()">Export ke Excel</button>
+  <button onclick="exportToPDF()">Export ke PDF</button>
 
-  <div id="output"></div>
-  <div id="printableTable" style="display:none;"></div>
+  <div id="output"></div>
+  <div id="printableTable" style="display:none;"></div>
 
-  <script>
-    // Inisialisasi jsPDF
-    window.jsPDF = window.jspdf.jsPDF;
-    
-    function periksa() {
-      const sekolah = document.getElementById("sekolah").value.trim();
-      const kelas = document.getElementById("kelas").value.trim();
-      const mapel = document.getElementById("mapel").value.trim();
-      const kunci = document.getElementById("kunci").value.toUpperCase().replace(/\s/g, "");
-      const data = document.getElementById("data").value.trim().split("\n");
+  <script>
+    // Inisialisasi jsPDF
+    window.jsPDF = window.jspdf.jsPDF;
+    
+    function periksa() {
+      const sekolah = document.getElementById("sekolah").value.trim();
+      const kelas = document.getElementById("kelas").value.trim();
+      const mapel = document.getElementById("mapel").value.trim();
+      const kunci = document.getElementById("kunci").value.toUpperCase().replace(/\s/g, "");
+      const data = document.getElementById("data").value.trim().split("\n");
 
-      if (!kunci) {
-        alert("Kunci jawaban harus diisi!");
-        return;
-      }
+      if (!kunci) {
+        alert("Kunci jawaban harus diisi!");
+        return;
+      }
 
-      let hasil = [];
-      let outputHTML = "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
-      let printableHTML = "";
+      let hasil = [];
+      let outputHTML = "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+      let printableHTML = "";
 
-      // Header untuk printable version
-      if (sekolah) printableHTML += `<h2 style="text-align:center">${sekolah}</h2>`;
-      if (kelas) printableHTML += `<h3 style="text-align:left">Kelas: ${kelas}</h3>`;
-      if (mapel) printableHTML += `<h3 style="text-align:right">Mata Pelajaran: ${mapel}</h3>`;
-      printableHTML += "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
+      // Header untuk printable version
+      if (sekolah) printableHTML += `<h2 style="text-align:center">${sekolah}</h2>`;
+      if (kelas) printableHTML += `<h3 style="text-align:left">Kelas: ${kelas}</h3>`;
+      if (mapel) printableHTML += `<h3 style="text-align:right">Mata Pelajaran: ${mapel}</h3>`;
+      printableHTML += "<table><tr><th>No</th><th>Nama</th><th>Jawaban</th><th>Benar</th><th>Salah</th><th>Skor</th></tr>";
 
-      data.forEach((baris, index) => {
-        const parts = baris.split(",");
-        if (parts.length < 2) return;
-        
-        const nama = parts[0].trim();
-        const jawabanRaw = parts[1].trim();
-        
-        const jawaban = jawabanRaw.toUpperCase().replace(/\s/g, "");
-        let benar = 0;
-        
-        for (let i = 0; i < Math.min(kunci.length, jawaban.length); i++) {
-          if (jawaban[i] === kunci[i]) benar++;
-        }
-        
-        const total = kunci.length;
-        const nilai = (benar * 2).toFixed(2);
-        const salah = total - benar;
+      data.forEach((baris, index) => {
+        const parts = baris.split(",");
+        if (parts.length < 2) return;
+        
+        const nama = parts[0].trim();
+        const jawabanRaw = parts[1].trim();
+        
+        const jawaban = jawabanRaw.toUpperCase().replace(/\s/g, "");
+        let benar = 0;
+        
+        for (let i = 0; i < Math.min(kunci.length, jawaban.length); i++) {
+          if (jawaban[i] === kunci[i]) benar++;
+        }
+        
+        const total = kunci.length;
+        const nilai = (benar * 2).toFixed(2);
+        const salah = total - benar;
 
-        hasil.push({ 
-          No: index + 1, 
-          Nama: nama, 
-          Jawaban: jawaban, 
-          Benar: benar, 
-          Salah: salah,
-          Skor: nilai,
-          Sekolah: sekolah,
-          Kelas: kelas,
-          Mapel: mapel
-        });
-        
-        outputHTML += `<tr>
-          <td>${index + 1}</td>
-          <td>${nama}</td>
-          <td>${jawaban}</td>
-          <td>${benar}</td>
-          <td>${salah}</td>
-          <td>${nilai}</td>
-        </tr>`;
-        
-        printableHTML += `<tr>
-          <td>${index + 1}</td>
-          <td>${nama}</td>
-          <td>${jawaban}</td>
-          <td>${benar}</td>
-          <td>${salah}</td>
-          <td>${nilai}</td>
-        </tr>`;
-      });
+        hasil.push({ 
+          No: index + 1, 
+          Nama: nama, 
+          Jawaban: jawaban, 
+          Benar: benar, 
+          Salah: salah,
+          Skor: nilai,
+          Sekolah: sekolah,
+          Kelas: kelas,
+          Mapel: mapel
+        });
+        
+        outputHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+        
+        printableHTML += `<tr>
+          <td>${index + 1}</td>
+          <td>${nama}</td>
+          <td>${jawaban}</td>
+          <td>${benar}</td>
+          <td>${salah}</td>
+          <td>${nilai}</td>
+        </tr>`;
+      });
 
-      outputHTML += "</table>";
-      printableHTML += "</table>";
-      document.getElementById("output").innerHTML = outputHTML;
-      document.getElementById("printableTable").innerHTML = printableHTML;
-      window.hasilData = hasil;
-    }
+      outputHTML += "</table>";
+      printableHTML += "</table>";
+      document.getElementById("output").innerHTML = outputHTML;
+      document.getElementById("printableTable").innerHTML = printableHTML;
+      window.hasilData = hasil;
+    }
 
-    function exportToExcel() {
-      if (!window.hasilData || window.hasilData.length === 0) {
-        alert("Silakan periksa jawaban terlebih dahulu.");
-        return;
-      }
+    function exportToExcel() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
 
-      const excelData = window.hasilData.map(item => ({
-        No: item.No,
-        Nama: item.Nama,
-        Jawaban: item.Jawaban,
-        Benar: item.Benar,
-        Salah: item.Salah,
-        Skor: item.Skor,
-        Sekolah: item.Sekolah,
-        Kelas: item.Kelas,
-        MataPelajaran: item.Mapel
-      }));
+      const excelData = window.hasilData.map(item => ({
+        No: item.No,
+        Nama: item.Nama,
+        Jawaban: item.Jawaban,
+        Benar: item.Benar,
+        Salah: item.Salah,
+        Skor: item.Skor,
+        Sekolah: item.Sekolah,
+        Kelas: item.Kelas,
+        MataPelajaran: item.Mapel
+      }));
 
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(excelData);
-      XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
-      XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
-    }
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
+      XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
+    }
 
-    function exportToPDF() {
-      if (!window.hasilData || window.hasilData.length === 0) {
-        alert("Silakan periksa jawaban terlebih dahulu.");
-        return;
-      }
+    function exportToPDF() {
+      if (!window.hasilData || window.hasilData.length === 0) {
+        alert("Silakan periksa jawaban terlebih dahulu.");
+        return;
+      }
 
-      const doc = new jsPDF();
-      const { width } = doc.internal.pageSize;
-      const sekolah = window.hasilData[0].Sekolah;
-      const kelas = window.hasilData[0].Kelas;
-      const mapel = window.hasilData[0].Mapel;
+      const doc = new jsPDF();
+      const { width } = doc.internal.pageSize;
+      const sekolah = window.hasilData[0].Sekolah;
+      const kelas = window.hasilData[0].Kelas;
+      const mapel = window.hasilData[0].Mapel;
 
-      // Set default font
-      doc.setFont("helvetica", "normal");
+      // Set default font
+      doc.setFont("helvetica", "normal");
 
-      // School (Center)
-      if (sekolah) {
-        doc.setFontSize(16);
-        doc.text(sekolah, width / 2, 15, { align: 'center' });
-      }
+      // School (Center)
+      if (sekolah) {
+        doc.setFontSize(16);
+        doc.text(sekolah, width / 2, 15, { align: 'center' });
+      }
 
-      // Class (Left) and Subject (Right) - Same Y position
-      const infoY = 25;
-      if (kelas) {
-        doc.setFontSize(12);
-        doc.text(`Kelas: ${kelas}`, 15, infoY);
-      }
-      if (mapel) {
-        doc.setFontSize(12);
-        doc.text(`Mata Pelajaran: ${mapel}`, width - 15, infoY, { align: 'right' });
-      }
+      // Class (Left) and Subject (Right) - Same Y position
+      const infoY = 25;
+      if (kelas) {
+        doc.setFontSize(12);
+        doc.text(`Kelas: ${kelas}`, 15, infoY);
+      }
+      if (mapel) {
+        doc.setFontSize(12);
+        doc.text(`Mata Pelajaran: ${mapel}`, width - 15, infoY, { align: 'right' });
+      }
 
-      // Calculate startY position for table
-      const startY = infoY + 10;
+      // Calculate startY position for table
+      const startY = infoY + 10;
 
-      // Prepare data for PDF
-      const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
-      const data = window.hasilData.map(item => [
-        item.No,
-        item.Nama,
-        item.Jawaban,
-        item.Benar,
-        item.Salah,
-        item.Skor
-      ]);
-      
-      // Add table to PDF
-      doc.autoTable({
-        head: headers,
-        body: data,
-        startY: startY,
-        styles: {
-          fontSize: 9,
-          cellPadding: 3,
-          halign: 'center'
-        },
-        headStyles: {
-          fillColor: [220, 220, 220],
-          textColor: [0, 0, 0],
-          fontStyle: 'bold'
-        },
-        columnStyles: {
-          0: { halign: 'center' }, // No (center)
-          1: { halign: 'left' },   // Nama (left-align)
-          2: { halign: 'center' }, // Jawaban (center)
-          3: { halign: 'center' }, // Benar (center)
-          4: { halign: 'center' }, // Salah (center)
-          5: { halign: 'right' }   // Skor (right-align)
-        }
-      });
-      
-      doc.save("hasil_lembar_periksa.pdf");
-    }
-  </script>
+      // Prepare data for PDF
+      const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
+      const data = window.hasilData.map(item => [
+        item.No,
+        item.Nama,
+        item.Jawaban,
+        item.Benar,
+        item.Salah,
+        item.Skor
+      ]);
+      
+      // Add table to PDF
+      doc.autoTable({
+        head: headers,
+        body: data,
+        startY: startY,
+        styles: {
+          fontSize: 9,
+          cellPadding: 3,
+          halign: 'center'
+        },
+        headStyles: {
+          fillColor: [220, 220, 220],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          0: { halign: 'center' }, // No (center)
+          1: { halign: 'left' },   // Nama (left-align)
+          2: { halign: 'center' }, // Jawaban (center)
+          3: { halign: 'center' }, // Benar (center)
+          4: { halign: 'center' }, // Salah (center)
+          5: { halign: 'right' }   // Skor (right-align)
+        }
+      });
+      
+      doc.save("hasil_lembar_periksa.pdf");
+    }
+  </script>
 </body>
 </html>
