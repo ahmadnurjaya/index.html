@@ -45,8 +45,8 @@
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 12px; /* Padding ini sudah disesuaikan sebelumnya */
-            font-size: 20px; /* Ukuran font ini sudah disesuaikan sebelumnya */
+            padding: 10px;
+            font-size: 16px; /* Ukuran font untuk teks yang diketik */
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
@@ -55,12 +55,12 @@
         /* KHUSUS UNTUK UKURAN FONT PLACEHOLDER */
         input[type="text"]::placeholder,
         textarea::placeholder {
-            font-size: 20px; /* Ini sudah 20px */
-            color: #999;
+            font-size: 14px; /* <--- PERUBAHAN FONT SIZE DI SINI (dari 16px menjadi 14px) */
+            color: #999; /* <--- OPSIONAL: TAMBAH WARNA AGAR LEBIH JELAS SEBAGAI PLACEHOLDER */
         }
 
         textarea {
-            height: 130px; /* <--- PERBAIKAN: Meningkatkan tinggi textarea ke 130px */
+            height: 100px;
             resize: vertical;
         }
 
