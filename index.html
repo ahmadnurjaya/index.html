@@ -45,8 +45,8 @@
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 10px;
-            font-size: 16px; /* Ukuran font untuk teks yang diketik */
+            padding: 12px; /* Meningkatkan padding agar cukup untuk font 20px */
+            font-size: 20px; /* Ukuran font untuk teks yang diketik */
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
@@ -55,27 +55,51 @@
         /* KHUSUS UNTUK UKURAN FONT PLACEHOLDER */
         input[type="text"]::placeholder,
         textarea::placeholder {
-            font-size: 14px; /* <--- PERUBAHAN FONT SIZE DI SINI (dari 16px menjadi 14px) */
-            color: #999; /* <--- OPSIONAL: TAMBAH WARNA AGAR LEBIH JELAS SEBAGAI PLACEHOLDER */
+            font-size: 20px; /* Ukuran font placeholder */
+            color: #999;
         }
 
         textarea {
-            height: 100px;
+            height: 130px; /* Meningkatkan tinggi textarea */
             resize: vertical;
         }
 
+        /* Gaya untuk tombol default */
         button {
             padding: 10px 20px;
             margin: 10px 5px 0 0;
             font-size: 16px;
-            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
+            opacity: 0.9; /* Efek hover umum */
+        }
+
+        /* Gaya Khusus Tombol "Periksa Jawaban" (Biru) */
+        #btnPeriksa {
+            background-color: #007bff; /* Biru standar */
+        }
+        #btnPeriksa:hover {
             background-color: #0056b3;
+        }
+
+        /* Gaya Khusus Tombol "Export ke Excel" (Hijau) */
+        #btnExcel {
+            background-color: #217346; /* Hijau Excel */
+        }
+        #btnExcel:hover {
+            background-color: #1a5737;
+        }
+
+        /* Gaya Khusus Tombol "Export ke PDF" (Merah) */
+        #btnPDF {
+            background-color: #f40f02; /* Merah PDF */
+        }
+        #btnPDF:hover {
+            background-color: #c30c02;
         }
 
         table {
@@ -183,9 +207,9 @@ Budi, ABCDABCCAB
 Cantika, ABCBABCDAB"></textarea>
     </div>
 
-    <button onclick="periksa()">Periksa Jawaban</button>
-    <button onclick="exportToExcel()">Export ke Excel</button>
-    <button onclick="exportToPDF()">Export ke PDF</button>
+    <button id="btnPeriksa" onclick="periksa()">Periksa Jawaban</button>
+    <button id="btnExcel" onclick="exportToExcel()">Export ke Excel</button>
+    <button id="btnPDF" onclick="exportToPDF()">Export ke PDF</button>
 
     <div id="output"></div>
     <div id="printableTable" style="display:none;"></div>
