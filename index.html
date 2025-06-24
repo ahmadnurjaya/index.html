@@ -46,13 +46,18 @@
         textarea {
             width: 100%;
             padding: 10px;
-            font-size: 14px; /* Ukuran font untuk teks yang diketik */
+            font-size: 20px; /* <--- PERBAIKAN: UBAH UKURAN FONT DI SINI MENJADI 20px */
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        
-        
+
+        /* KHUSUS UNTUK UKURAN FONT PLACEHOLDER */
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            font-size: 20px; /* Ini sudah 20px */
+            color: #999;
+        }
 
         textarea {
             height: 100px;
