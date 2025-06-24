@@ -1,141 +1,35 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Periksa Jawaban</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background: linear-gradient(to bottom right, #d3e0ea, #f8d7da);
-    }
-
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      font-family: monospace; /* PENAMBAHAN INI SAJA */
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-
-    button {
-      padding: 10px 16px;
-      margin-right: 8px;
-      font-size: 14px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    h1 {
-      text-align: center;
-      color: #4a4aff;
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    .tiktok-btn {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .tiktok-btn a {
-      background-color: #ff2d55;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <h1>APLIKASI PERIKSA JAWABAN UJIAN</h1>
-  <div class="tiktok-btn">
-    <a href="https://tiktok.com/@tukangseblakaesthetic" target="_blank">@tukangseblakaesthetic</a>
-  </div>
-
-  <label>Nama Sekolah (Opsional):</label>
-  <input type="text" id="sekolah" placeholder="Contoh: SMP AR-RIDWAN">
-
-  <label>Kelas (Opsional):</label>
-  <input type="text" id="kelas" placeholder="Contoh: VII-A">
-
-  <label>Mata Pelajaran (Opsional):</label>
-  <input type="text" id="mapel" placeholder="Contoh: Matematika">
-
-  <label>Kunci Jawaban (Wajib):</label>
-  <textarea id="kunci" rows="1" placeholder="Contoh: ABCDCBA"></textarea>
-
-  <label>Daftar Jawaban Siswa (Wajib):</label>
-  <textarea id="jawaban" rows="4" placeholder="Contoh:
-Ahmad Nurjaya, ABCDABCDAB"></textarea>
-
-  <button onclick="periksa()">Periksa Jawaban</button>
-  <button onclick="exportExcel()">Export ke Excel</button>
-  <button onclick="exportPDF()">Export ke PDF</button>
-
-  <script>
-    function exportPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
-      const data = [];
-
-      const hasil = [
-        { No: 1, Nama: "Ahmad Nurjaya", Jawaban: "ABCDABCDAB", Benar: 8, Salah: 2, Skor: 16 }
-      ];
-
-      hasil.forEach(item => {
-        data.push([
-          item.No,
-          item.Nama,
-          item.Jawaban,
-          item.Benar,
-          item.Salah,
-          item.Skor
-        ]);
-      });
-
-      doc.autoTable({
-        head: headers,
-        body: data,
-        startY: 20,
-        styles: {
-          fontSize: 9,
-          cellPadding: 3,
-          halign: 'center'
-        },
-        headStyles: {
-          fillColor: [220, 220, 220],
-          textColor: [0, 0, 0],
-          fontStyle: 'bold'
-        },
-        columnStyles: {
-          0: { halign: 'center' },
-          1: { halign: 'left' },
-          2: { halign: 'center' },
-          3: { halign: 'center' },
-          4: { halign: 'center' },
-          5: { halign: 'right' }
-        }
-      });
-
-      doc.save("hasil_lembar_periksa.pdf");
-    }
-  </script>
+Nih file .html nya.         item.Benar,
+        item.Salah,
+        item.Skor
+      ]);
+      
+      // Add table to PDF
+      doc.autoTable({
+        head: headers,
+        body: data,
+        startY: startY,
+        styles: {
+          fontSize: 9,
+          cellPadding: 3,
+          halign: 'center'
+        },
+        headStyles: {
+          fillColor: [220, 220, 220],
+          textColor: [0, 0, 0],
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          0: { halign: 'center' }, // No (center)
+          1: { halign: 'left' },   // Nama (left-align)
+          2: { halign: 'center' }, // Jawaban (center)
+          3: { halign: 'center' }, // Benar (center)
+          4: { halign: 'center' }, // Salah (center)
+          5: { halign: 'right' }   // Skor (right-align)
+        }
+      });
+      
+      doc.save("hasil_lembar_periksa.pdf");
+    }
+  </script>
 </body>
 </html>
