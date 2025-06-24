@@ -41,26 +41,26 @@
             font-weight: bold;
         }
 
-        /* Gaya untuk input teks dan textarea - DIKEMBALIKAN KE AWAL */
+        /* Gaya untuk input teks dan textarea */
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 10px; /* Kembali ke 10px */
-            font-size: 16px; /* Kembali ke 16px */
+            padding: 10px;
+            font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
 
-        /* KHUSUS UNTUK UKURAN FONT PLACEHOLDER - DIKEMBALIKAN KE AWAL */
+        /* KHUSUS UNTUK UKURAN FONT PLACEHOLDER */
         input[type="text"]::placeholder,
         textarea::placeholder {
-            font-size: 14px; /* Kembali ke 14px */
+            font-size: 14px;
             color: #999;
         }
 
         textarea {
-            height: 100px; /* Kembali ke 100px */
+            height: 100px;
             resize: vertical;
         }
 
@@ -75,12 +75,12 @@
             cursor: pointer;
         }
         button:hover {
-            opacity: 0.9; /* Efek hover umum */
+            opacity: 0.9;
         }
 
         /* Gaya Khusus Tombol "Periksa Jawaban" (Biru) */
         #btnPeriksa {
-            background-color: #007bff; /* Biru standar */
+            background-color: #007bff;
         }
         #btnPeriksa:hover {
             background-color: #0056b3;
@@ -88,7 +88,7 @@
 
         /* Gaya Khusus Tombol "Export ke Excel" (Hijau) */
         #btnExcel {
-            background-color: #217346; /* Hijau Excel */
+            background-color: #217346;
         }
         #btnExcel:hover {
             background-color: #1a5737;
@@ -96,7 +96,7 @@
 
         /* Gaya Khusus Tombol "Export ke PDF" (Merah) */
         #btnPDF {
-            background-color: #f40f02; /* Merah PDF */
+            background-color: #f40f02;
         }
         #btnPDF:hover {
             background-color: #c30c02;
@@ -168,11 +168,29 @@
         .tiktok-button i {
             margin-right: 5px;
         }
+
+        /* Gaya untuk gambar yang ditambahkan */
+        .image-container {
+            text-align: center; /* Untuk menengahkan gambar */
+            margin-top: -15px; /* Sesuaikan jarak atas jika perlu */
+            margin-bottom: 20px; /* Jarak bawah gambar */
+        }
+        .image-container img {
+            max-width: 100%; /* Agar gambar responsif */
+            height: auto; /* Mempertahankan rasio aspek */
+            display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+            margin: 0 auto; /* Menengahkan gambar */
+            border-radius: 8px; /* Sudut sedikit membulat untuk estetika */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan ringan */
+        }
     </style>
 </head>
 <body>
     <h2>APLIKASI PERIKSA JAWABAN UJIAN</h2>
 
+    <div class="image-container">
+        <img src="https://drive.google.com/uc?id=1E1_jKi-efBE28h_d9p9vyx4j-AVnOuWt" alt="Ilustrasi Aplikasi" width="300">
+    </div>
     <div class="tiktok-button-container">
         <a href="https://www.tiktok.com/@tukangseblakaesthetic" class="tiktok-button" target="_blank">
             <i class="fab fa-tiktok"></i> Follow @tukangseblakaesthetic
