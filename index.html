@@ -333,21 +333,87 @@ Cantika, ABCBABCDAB"></textarea>
                 return;
             }
 
-            const excelData = window.hasilData.map(item => ({
-                // URUTAN KOLOM YANG DIINGINKAN UNTUK EXCEL
+            // Data yang akan diekspor, menggunakan kunci yang sesuai dengan header
+            const exportRawData = window.hasilData.map(item => ({
                 No: item.No,
                 Sekolah: item.Sekolah,
                 Kelas: item.Kelas,
-                MataPelajaran: item.Mapel,
+                MataPelajaran: item.Mapel, // Gunakan kunci 'MataPelajaran' untuk konsistensi
                 Nama: item.Nama,
-                Jawaban: item.Jawaban, 
+                Jawaban: item.Jawaban,
                 Benar: item.Benar,
                 Salah: item.Salah,
                 Skor: item.Skor
             }));
 
+            // Tentukan urutan kolom dan teks tampilan header yang diinginkan
+            const headerKeys = ["No", "Sekolah", "Kelas", "MataPelajaran", "Nama", "Jawaban", "Benar", "Salah", "Skor"];
+            const headerDisplayText = ["NO", "SEKOLAH", "KELAS", "MATA PELAJARAN", "NAMA", "JAWABAN", "BENAR", "SALAH", "SKOR"];
+
+            // Buat array of arrays untuk sheet agar bisa mengontrol header dan urutan dengan presisi
+            const aoaData = [headerDisplayText]; // Baris pertama adalah header
+            exportRawData.forEach(item => {
+                const row = [];
+                headerKeys.forEach(key => {
+                    row.push(item[key]);
+                });
+                aoaData.push(row);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(aoaData);
+
+            // Terapkan gaya
+            const range = XLSX.utils.decode_range(ws['!ref']); // Dapatkan rentang sel di sheet
+
+            // Gaya border umum
+            const borderStyle = {
+                top: { style: "thin", color: { auto: 1 } },
+                bottom: { style: "thin", color: { auto: 1 } },
+                left: { style: "thin", color: { auto: 1 } },
+                right: { style: "thin", color: { auto: 1 } }
+            };
+
+            // Gaya header (Baris 1, indeks 0)
+            const headerBgColor = "FFD3D3D3"; // Warna abu-abu terang (format ARGB)
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_address = XLSX.utils.encode_cell({ r: 0, c: C }); // Baris header adalah r=0
+                if (!ws[cell_address]) ws[cell_address] = {};
+                ws[cell_address].s = {
+                    fill: { fgColor: { rgb: headerBgColor } },
+                    font: { bold: true },
+                    border: borderStyle,
+                    alignment: { horizontal: 'center', vertical: 'center' } // Header selalu rata tengah
+                };
+            }
+
+            // Gaya sel data (Baris 2 dan seterusnya)
+            // Identifikasi indeks kolom untuk 'Nama' dan 'Jawaban'
+            const namaColIndex = headerKeys.indexOf("Nama");
+            const jawabanColIndex = headerKeys.indexOf("Jawaban");
+
+            for (let R = range.s.r + 1; R <= range.e.r; ++R) { // Mulai dari baris kedua (data)
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cell_address]) ws[cell_address] = { v: null }; // Pastikan objek sel ada meskipun kosong
+
+                    // Inisialisasi gaya jika belum ada
+                    if (!ws[cell_address].s) ws[cell_address].s = {};
+                    if (!ws[cell_address].s.alignment) ws[cell_address].s.alignment = {};
+
+                    // Terapkan border ke semua sel data
+                    ws[cell_address].s.border = borderStyle;
+
+                    // Terapkan perataan
+                    if (C === namaColIndex || C === jawabanColIndex) {
+                        ws[cell_address].s.alignment.horizontal = 'left';
+                    } else {
+                        ws[cell_address].s.alignment.horizontal = 'center';
+                    }
+                    ws[cell_address].s.alignment.vertical = 'center'; // Perataan vertikal tengah untuk semua
+                }
+            }
+
             const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.json_to_sheet(excelData);
             XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
             XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
         }
@@ -421,9 +487,8 @@ Cantika, ABCBABCDAB"></textarea>
                     4: { halign: 'center' }, // Salah (center)
                     5: { halign: 'right' }    // Skor (right-align)
                 }
-                // PROPERTI tableLineColor DAN tableLineWidth DIHAPUS agar tidak ada garis
-                // Karena properti ini tidak ada, autotable akan kembali ke perilaku defaultnya
-                // yang mungkin memiliki garis sangat tipis atau tidak ada sama sekali tergantung versi/konfigurasi
+                // PROPERTI tableLineColor DAN tableLineWidth DIHAPUS agar tidak ada garis tebal
+                // jsPDF-autotable secara default tidak akan menggambar garis tebal kecuali ditentukan
             });
             
             doc.save("hasil_lembar_periksa.pdf");
