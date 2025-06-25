@@ -184,7 +184,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan ringan */
         }
         
-        /* ATURAN BARU UNTUK RATA KIRI KOLOM NAMA DAN JAWABAN SISWA */
+        /* ATURAN UNTUK RATA KIRI KOLOM NAMA DAN JAWABAN SISWA */
         #output table td:nth-child(2), /* Kolom Nama */
         #output table td:nth-child(3) /* Kolom Jawaban */ {
             text-align: left;
@@ -334,15 +334,16 @@ Cantika, ABCBABCDAB"></textarea>
             }
 
             const excelData = window.hasilData.map(item => ({
+                // URUTAN KOLOM YANG DIINGINKAN UNTUK EXCEL
                 No: item.No,
-                Nama: item.Nama,
-                Jawaban: item.Jawaban,
-                Benar: item.Benar,
-                Salah: item.Salah,
-                Skor: item.Skor,
                 Sekolah: item.Sekolah,
                 Kelas: item.Kelas,
-                MataPelajaran: item.Mapel
+                MataPelajaran: item.Mapel,
+                Nama: item.Nama,
+                Jawaban: item.Jawaban, 
+                Benar: item.Benar,
+                Salah: item.Salah,
+                Skor: item.Skor
             }));
 
             const wb = XLSX.utils.book_new();
@@ -386,12 +387,12 @@ Cantika, ABCBABCDAB"></textarea>
             // Calculate startY position for table
             const startY = infoY + 10;
 
-            // Prepare data for PDF
+            // Prepare data for PDF (kolom Jawaban tetap ada di PDF seperti sebelumnya)
             const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
             const data = window.hasilData.map(item => [
                 item.No,
                 item.Nama,
-                item.Jawaban,
+                item.Jawaban, 
                 item.Benar,
                 item.Salah,
                 item.Skor
@@ -414,12 +415,15 @@ Cantika, ABCBABCDAB"></textarea>
                 },
                 columnStyles: {
                     0: { halign: 'center' }, // No (center)
-                    1: { halign: 'left' },    // Nama (left-align) - Sesuai permintaan
-                    2: { halign: 'left' },    // Jawaban (left-align) - Sesuai permintaan
+                    1: { halign: 'left' },    // Nama (left-align)
+                    2: { halign: 'left' },    // Jawaban (left-align)
                     3: { halign: 'center' }, // Benar (center)
                     4: { halign: 'center' }, // Salah (center)
                     5: { halign: 'right' }    // Skor (right-align)
                 }
+                // PROPERTI tableLineColor DAN tableLineWidth DIHAPUS agar tidak ada garis
+                // Karena properti ini tidak ada, autotable akan kembali ke perilaku defaultnya
+                // yang mungkin memiliki garis sangat tipis atau tidak ada sama sekali tergantung versi/konfigurasi
             });
             
             doc.save("hasil_lembar_periksa.pdf");
