@@ -333,25 +333,22 @@ Cantika, ABCBABCDAB"></textarea>
                 return;
             }
 
-            // Data yang akan diekspor, menggunakan kunci yang sesuai dengan header
             const exportRawData = window.hasilData.map(item => ({
                 No: item.No,
                 Sekolah: item.Sekolah,
                 Kelas: item.Kelas,
-                MataPelajaran: item.Mapel, // Gunakan kunci 'MataPelajaran' untuk konsistensi
+                MataPelajaran: item.Mapel,
                 Nama: item.Nama,
-                Jawaban: item.Jawaban,
+                Jawaban: item.Jawaban, 
                 Benar: item.Benar,
                 Salah: item.Salah,
                 Skor: item.Skor
             }));
 
-            // Tentukan urutan kolom dan teks tampilan header yang diinginkan
             const headerKeys = ["No", "Sekolah", "Kelas", "MataPelajaran", "Nama", "Jawaban", "Benar", "Salah", "Skor"];
             const headerDisplayText = ["NO", "SEKOLAH", "KELAS", "MATA PELAJARAN", "NAMA", "JAWABAN", "BENAR", "SALAH", "SKOR"];
 
-            // Buat array of arrays untuk sheet agar bisa mengontrol header dan urutan dengan presisi
-            const aoaData = [headerDisplayText]; // Baris pertama adalah header
+            const aoaData = [headerDisplayText]; 
             exportRawData.forEach(item => {
                 const row = [];
                 headerKeys.forEach(key => {
@@ -362,56 +359,25 @@ Cantika, ABCBABCDAB"></textarea>
 
             const ws = XLSX.utils.aoa_to_sheet(aoaData);
 
-            // Terapkan gaya
-            const range = XLSX.utils.decode_range(ws['!ref']); // Dapatkan rentang sel di sheet
+            // --- Mulai bagian Autofit Column Width ---
+            const colWidths = [];
+            const range = XLSX.utils.decode_range(ws['!ref']);
 
-            // Gaya border umum
-            const borderStyle = {
-                top: { style: "thin", color: { auto: 1 } },
-                bottom: { style: "thin", color: { auto: 1 } },
-                left: { style: "thin", color: { auto: 1 } },
-                right: { style: "thin", color: { auto: 1 } }
-            };
-
-            // Gaya header (Baris 1, indeks 0)
-            const headerBgColor = "FFD3D3D3"; // Warna abu-abu terang (format ARGB)
-            for (let C = range.s.c; C <= range.e.c; ++C) {
-                const cell_address = XLSX.utils.encode_cell({ r: 0, c: C }); // Baris header adalah r=0
-                if (!ws[cell_address]) ws[cell_address] = {};
-                ws[cell_address].s = {
-                    fill: { fgColor: { rgb: headerBgColor } },
-                    font: { bold: true },
-                    border: borderStyle,
-                    alignment: { horizontal: 'center', vertical: 'center' } // Header selalu rata tengah
-                };
-            }
-
-            // Gaya sel data (Baris 2 dan seterusnya)
-            // Identifikasi indeks kolom untuk 'Nama' dan 'Jawaban'
-            const namaColIndex = headerKeys.indexOf("Nama");
-            const jawabanColIndex = headerKeys.indexOf("Jawaban");
-
-            for (let R = range.s.r + 1; R <= range.e.r; ++R) { // Mulai dari baris kedua (data)
-                for (let C = range.s.c; C <= range.e.c; ++C) {
+            for (let C = range.s.c; C <= range.e.c; ++C) { // Iterasi kolom
+                let maxWidth = 0;
+                for (let R = range.s.r; R <= range.e.r; ++R) { // Iterasi baris
                     const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
-                    if (!ws[cell_address]) ws[cell_address] = { v: null }; // Pastikan objek sel ada meskipun kosong
-
-                    // Inisialisasi gaya jika belum ada
-                    if (!ws[cell_address].s) ws[cell_address].s = {};
-                    if (!ws[cell_address].s.alignment) ws[cell_address].s.alignment = {};
-
-                    // Terapkan border ke semua sel data
-                    ws[cell_address].s.border = borderStyle;
-
-                    // Terapkan perataan
-                    if (C === namaColIndex || C === jawabanColIndex) {
-                        ws[cell_address].s.alignment.horizontal = 'left';
-                    } else {
-                        ws[cell_address].s.alignment.horizontal = 'center';
+                    const cell = ws[cell_address];
+                    if (cell && cell.v) {
+                        // Menghitung lebar berdasarkan panjang string, tambahkan sedikit padding
+                        const cellValue = String(cell.v);
+                        maxWidth = Math.max(maxWidth, cellValue.length);
                     }
-                    ws[cell_address].s.alignment.vertical = 'center'; // Perataan vertikal tengah untuk semua
                 }
+                colWidths[C] = { wch: maxWidth + 2 }; // Tambah 2 untuk padding ekstra
             }
+            ws['!cols'] = colWidths;
+            // --- Akhir bagian Autofit Column Width ---
 
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Hasil Periksa");
@@ -430,16 +396,13 @@ Cantika, ABCBABCDAB"></textarea>
             const kelas = window.hasilData[0].Kelas;
             const mapel = window.hasilData[0].Mapel;
 
-            // Set default font
             doc.setFont("helvetica", "normal");
 
-            // School (Center)
             if (sekolah) {
                 doc.setFontSize(16);
                 doc.text(sekolah, width / 2, 15, { align: 'center' });
             }
 
-            // Class (Left) and Subject (Right) - Same Y position
             const infoY = 25;
             if (kelas) {
                 doc.setFontSize(12);
@@ -450,10 +413,8 @@ Cantika, ABCBABCDAB"></textarea>
                 doc.text(`Mata Pelajaran: ${mapel}`, width - 15, infoY, { align: 'right' });
             }
 
-            // Calculate startY position for table
             const startY = infoY + 10;
 
-            // Prepare data for PDF (kolom Jawaban tetap ada di PDF seperti sebelumnya)
             const headers = [["No", "Nama", "Jawaban", "Benar", "Salah", "Skor"]];
             const data = window.hasilData.map(item => [
                 item.No,
@@ -464,7 +425,6 @@ Cantika, ABCBABCDAB"></textarea>
                 item.Skor
             ]);
             
-            // Add table to PDF
             doc.autoTable({
                 head: headers,
                 body: data,
@@ -480,15 +440,14 @@ Cantika, ABCBABCDAB"></textarea>
                     fontStyle: 'bold'
                 },
                 columnStyles: {
-                    0: { halign: 'center' }, // No (center)
-                    1: { halign: 'left' },    // Nama (left-align)
-                    2: { halign: 'left' },    // Jawaban (left-align)
-                    3: { halign: 'center' }, // Benar (center)
-                    4: { halign: 'center' }, // Salah (center)
-                    5: { halign: 'right' }    // Skor (right-align)
+                    0: { halign: 'center' }, 
+                    1: { halign: 'left' },    
+                    2: { halign: 'left' },    
+                    3: { halign: 'center' }, 
+                    4: { halign: 'center' }, 
+                    5: { halign: 'right' }    
                 }
-                // PROPERTI tableLineColor DAN tableLineWidth DIHAPUS agar tidak ada garis tebal
-                // jsPDF-autotable secara default tidak akan menggambar garis tebal kecuali ditentukan
+                // Gaya border PDF dihapus seperti permintaan sebelumnya
             });
             
             doc.save("hasil_lembar_periksa.pdf");
