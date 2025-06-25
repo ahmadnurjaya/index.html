@@ -183,6 +183,17 @@
             border-radius: 8px; /* Sudut sedikit membulat untuk estetika */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan ringan */
         }
+        
+        /* ATURAN BARU UNTUK RATA KIRI KOLOM NAMA DAN JAWABAN SISWA */
+        #output table td:nth-child(2), /* Kolom Nama */
+        #output table td:nth-child(3) /* Kolom Jawaban */ {
+            text-align: left;
+        }
+        /* Juga terapkan ke tabel yang bisa dicetak agar konsisten */
+        #printableTable table td:nth-child(2), /* Kolom Nama */
+        #printableTable table td:nth-child(3) /* Kolom Jawaban */ {
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -309,14 +320,14 @@ Cantika, ABCBABCDAB"></textarea>
                 </tr>`;
             });
 
-            outputHTML += "</table>"; // BAGIAN INI HILANG
-            printableHTML += "</table>"; // BAGIAN INI HILANG
-            document.getElementById("output").innerHTML = outputHTML; // BAGIAN INI HILANG
-            document.getElementById("printableTable").innerHTML = printableHTML; // BAGIAN INI HILANG
-            window.hasilData = hasil; // BAGIAN INI HILANG
-        } // BAGIAN INI HILANG
+            outputHTML += "</table>";
+            printableHTML += "</table>";
+            document.getElementById("output").innerHTML = outputHTML;
+            document.getElementById("printableTable").innerHTML = printableHTML;
+            window.hasilData = hasil;
+        }
 
-        function exportToExcel() { // FUNGSI INI HILANG SEPENUHNYA
+        function exportToExcel() {
             if (!window.hasilData || window.hasilData.length === 0) {
                 alert("Silakan periksa jawaban terlebih dahulu.");
                 return;
@@ -340,7 +351,7 @@ Cantika, ABCBABCDAB"></textarea>
             XLSX.writeFile(wb, "hasil_lembar_periksa.xlsx");
         }
 
-        function exportToPDF() { // FUNGSI INI HILANG SEPENUHNYA
+        function exportToPDF() {
             if (!window.hasilData || window.hasilData.length === 0) {
                 alert("Silakan periksa jawaban terlebih dahulu.");
                 return;
@@ -403,8 +414,8 @@ Cantika, ABCBABCDAB"></textarea>
                 },
                 columnStyles: {
                     0: { halign: 'center' }, // No (center)
-                    1: { halign: 'left' },    // Nama (left-align)
-                    2: { halign: 'center' }, // Jawaban (center)
+                    1: { halign: 'left' },    // Nama (left-align) - Sesuai permintaan
+                    2: { halign: 'left' },    // Jawaban (left-align) - Sesuai permintaan
                     3: { halign: 'center' }, // Benar (center)
                     4: { halign: 'center' }, // Salah (center)
                     5: { halign: 'right' }    // Skor (right-align)
